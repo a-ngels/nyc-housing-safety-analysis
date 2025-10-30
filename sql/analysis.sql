@@ -106,11 +106,36 @@ SELECT DISTINCT
 FROM first_and_last_years
 ORDER BY percent_change DESC;
 
+-- 4. Top 5 Neighborhoods in each borough by Price per Square Foot
+WITH prices_sqft AS (
+   SELECT 
+      boro_name,
+      neighborhood,
+      ROUND(AVG(sale_price / gross_square_feet), 0) AS avg_price_per_sqft
+   FROM public.housing_sales_borough
+   WHERE gross_square_feet > 50
+   GROUP BY boro_name, neighborhood
+   HAVING COUNT(*) > 15
+)
+SELECT 
+   *
+FROM (
+   SELECT
+      boro_name,
+      neighborhood,
+      avg_price_per_sqft,
+      RANK() OVER (PARTITION BY boro_name ORDER BY avg_price_per_sqft DESC) AS ranking
+   FROM prices_sqft
+   WHERE avg_price_per_sqft IS NOT NULL
+) ranked
+WHERE ranking <= 5
+ORDER BY boro_name, ranking;
+
 ---------------------------------------------------
 -- NYPD Complaint Analysis
 ---------------------------------------------------
 
-
+-- 1. 
 
 
 
