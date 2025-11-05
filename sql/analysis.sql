@@ -135,11 +135,120 @@ ORDER BY boro_name, ranking;
 -- NYPD Complaint Analysis
 ---------------------------------------------------
 
--- 1. 
+-- 1. What offenses are most common in NYC complaints?
+SELECT
+   ofns_desc,
+   COUNT(*) AS total_complaints
+FROM public.nypd_complaints
+WHERE ofns_desc IS NOT NULL
+GROUP BY ofns_desc
+ORDER BY total_complaints DESC;
 
+-- 2. What percentage of complaints are classified as felonies in each borough?
+SELECT
+   boro_nm,
+   SUM(CASE WHEN law_cat_cd = 'FELONY' THEN 1 ELSE 0 END) as felony_complaints,
+   COUNT(*) AS total_complaints,
+   ROUND(
+      SUM(CASE WHEN law_cat_cd = 'FELONY' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) 
+   , 2) AS percent_felonies
+FROM public.nypd_complaints
+WHERE boro_nm IS NOT NULL
+GROUP BY boro_nm
+ORDER BY percent_felonies DESC;
 
+-- 3. Top 10 precincts by total complaints and percent of total NYC complaints.
+WITH precinct_counts AS (
+   SELECT
+      addr_pct_cd AS precinct,
+      boro_nm AS borough,
+      COUNT(*) AS total_complaints
+   FROM public.nypd_complaints
+   WHERE addr_pct_cd IS NOT NULL
+      AND boro_nm IS NOT NULL
+   GROUP BY addr_pct_cd, boro_nm
+)
+SELECT 
+   precinct,
+   borough,
+   total_complaints,
+   ROUND(
+      total_complaints * 100.0 / (SELECT COUNT(*) FROM public.nypd_complaints)
+   , 2) as percent_of_nyc
+FROM precinct_counts
+ORDER BY total_complaints DESC
+LIMIT 10;
+
+-- 4. Calculate a weighted average crime level by borough.
+WITH crime_levels AS (
+   SELECT
+      boro_nm AS borough,
+      CASE
+         WHEN law_cat_cd = 'VIOLATION' THEN 1
+         WHEN law_cat_cd = 'MISDEMEANOR' THEN 2
+         WHEN law_cat_cd = 'FELONY' THEN 3
+         ELSE 0
+      END AS weighted_level
+   FROM public.nypd_complaints
+   WHERE boro_nm IS NOT NULL 
+     AND law_cat_cd IS NOT NULL
+),
+total_ratings AS (
+   SELECT
+      borough,
+      COUNT(*) AS total_complaints,
+      ROUND(AVG(weighted_level), 2) AS avg_crime_level
+   FROM crime_levels
+   GROUP BY borough
+)
+SELECT 
+   borough, 
+   total_complaints,
+   avg_crime_level
+FROM total_ratings
+ORDER BY avg_crime_level DESC;
 
 ---------------------------------------------------
 -- Combined Analysis
 ---------------------------------------------------
 
+-- 1. Do boroughs with higher crime levels tend to have lower housing prices?
+WITH crime_levels AS (
+   SELECT
+      UPPER(boro_nm) AS borough,
+      CASE
+         WHEN law_cat_cd = 'VIOLATION' THEN 1
+         WHEN law_cat_cd = 'MISDEMEANOR' THEN 2
+         WHEN law_cat_cd = 'FELONY' THEN 3
+         ELSE 0
+      END AS weighted_level
+   FROM public.nypd_complaints
+   WHERE boro_nm IS NOT NULL 
+     AND law_cat_cd IS NOT NULL
+),
+total_ratings AS (
+   SELECT
+      borough,
+      COUNT(*) AS total_complaints,
+      ROUND(AVG(weighted_level), 2) AS avg_crime_level
+   FROM crime_levels
+   GROUP BY borough
+),
+housing_avg AS (
+   SELECT
+      boro_name AS borough,
+      ROUND(AVG(sale_price)) AS avg_sale_price
+   FROM public.housing_sales_borough
+   GROUP BY boro_name
+)
+SELECT
+   r.borough,
+   r.total_complaints,
+   r.avg_crime_level,
+   h.avg_sale_price
+FROM total_ratings r
+JOIN housing_avg h 
+   ON r.borough = h.borough
+ORDER BY avg_crime_level DESC;
+
+-- 2. 
