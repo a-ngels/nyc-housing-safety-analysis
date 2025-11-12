@@ -198,16 +198,16 @@ total_ratings AS (
    SELECT
       borough,
       COUNT(*) AS total_complaints,
-      ROUND(AVG(weighted_level), 2) AS avg_crime_level
+      ROUND(AVG(weighted_level), 2) AS avg_complaint_level
    FROM crime_levels
    GROUP BY borough
 )
 SELECT 
    borough, 
    total_complaints,
-   avg_crime_level
+   avg_complaint_level
 FROM total_ratings
-ORDER BY avg_crime_level DESC;
+ORDER BY avg_complaint_level DESC;
 
 ---------------------------------------------------
 -- Combined Analysis: Housing & Public Safety
