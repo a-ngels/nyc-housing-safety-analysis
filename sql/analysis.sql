@@ -112,7 +112,9 @@ WITH prices_sqft AS (
    SELECT 
       boro_name,
       neighborhood,
-      ROUND(AVG(sale_price / gross_square_feet), 0) AS avg_price_per_sqft
+	   ROUND(AVG(sale_price)) AS avg_price,
+	   ROUND(AVG(gross_square_feet)) AS avg_sqft,
+      ROUND(AVG(sale_price / NULLIF(gross_square_feet, 0)), 0) AS avg_price_per_sqft
    FROM public.housing_sales_borough
    WHERE gross_square_feet > 50
    GROUP BY boro_name, neighborhood
@@ -124,6 +126,8 @@ FROM (
    SELECT
       boro_name,
       neighborhood,
+	   avg_price,
+      avg_sqft,
       avg_price_per_sqft,
       RANK() OVER (PARTITION BY boro_name ORDER BY avg_price_per_sqft DESC) AS ranking
    FROM prices_sqft
@@ -177,8 +181,7 @@ SELECT
       total_complaints * 100.0 / (SELECT COUNT(*) FROM public.nypd_complaints)
    , 2) AS percent_of_nyc
 FROM precinct_counts
-ORDER BY total_complaints DESC
-LIMIT 10;
+ORDER BY total_complaints DESC;
 
 -- 4. Calculate a weighted average crime level by borough.
 WITH crime_levels AS (
