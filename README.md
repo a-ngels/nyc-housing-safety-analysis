@@ -27,14 +27,14 @@ This project combines NYC housing sales and NYPD complaint data to uncover how m
 - Dropped original text columns to avoid redundancy
 - Standardized date formatting by converting sale_date from text into date type
 - Added a primary key for indexing and to ensure row uniqueness
-- [`SQL Cleaning File`](./sql/sales_cleaning.sql)
+- [`Housing Cleaning File`](./sql/sales_cleaning.sql)
 
 ### NYPD Complaints
 - Loaded raw NYPD complaint data into the `nypd_complaints` table
 - Replaced text `'(null)'` values with actual SQL NULLs across multiple text fields
 - Converted text time fields into proper time type
 - Added a primary key for indexing and to ensure row uniqueness
-- [`SQL Cleaning File`](./sql/complaint_cleaning.sql)
+- [`Complaint Cleaning File`](./sql/complaint_cleaning.sql)
 
 ## Repository Structure
 ```
@@ -114,17 +114,17 @@ These queries connect NYC housing trends with public safety patterns.
 ## Tableau Dashboards
 Dashboards built in tableau visualize trends in housing, public safety and the relationships between the two.
 
-- **Dashboard 1 - Housing Trends Overview**
+- Dashboard 1 - [`Housing Dashboard`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_housing_overview)
 Visualizes borough-level sales, affordability trends, and changes in average housing prices.
-[`Dashboard 1`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_housing_overview)
+![Housing Dashboard Preview](./images/housing_dashboard.png)
 
-- **Dashboard 2 - Public Safety Overview**
-Shows the most common offenses, felony share, complaint distribution, and severity levels across NYC boroughs.
-[`Dashboard 2`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_safety_overview)
+- Dashboard 2 - [`Safety Dashboard`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_safety_overview) 
+Shows the most common offenses, felony share, complaint distribution, and severity levels across NYC boroughs. 
+![Safety Dashboard Preview](./images/safety_dashboard.png)
 
-- **Dashboard 3 - Combined Analysis Overview**
-Combines housing and complaint data to show how housing market trends align with public safety trends.
-[`Dashboard 3`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_combined_overview)
+- Dashboard 3 - [`Combined Dashboard`](https://public.tableau.com/app/profile/angel.serrano2901/viz/NYCHousingandSafetyAnalysis/dashboard_combined_overview)
+Combines housing and complaint data to show how housing market trends align with public safety trends.  
+![Combined Dashboard Preview](./images/combined_dashboard.png)
 
 ## Key Findings
 
@@ -157,7 +157,7 @@ Combines housing and complaint data to show how housing market trends align with
 - The NYPD complaint dataset was updated after download. It increased from ~288k rows (Oct 22, 2025) to ~439k rows (Nov 25, 2025).
 - Complaint dates are not recorded evenly, most of them were recorded in 2024, which makes monthly complaint trends unreliable. 
 - Housing data only shows final sale prices and does not show initial listing prices or any bidding activity.
-- Complaint data was analyzed at the borough level, so safety insights at the nieghborhood level are less detailed.
+- Complaint data was analyzed at the borough level, so safety insights at the neighborhood level are less detailed.
 
 ## Conclusion
 This project shows how SQL and Tableau can be used together to discover patterns across large real-world datasets. When exploring the NYC housing market, we see how Manhattan and Brooklyn dominate in pricing while affordability and sales activity differ across boroughs. Complaint numbers are more evenly distributed across the city. However, when the two datasets are combined, the results show that housing prices do not correlate with complaint severity. The Bronx stands out for having a high number of complaints, which may be influenced by population density, housing conditions, or higher reporting volume.  
