@@ -2,7 +2,7 @@
 Insights into the relationship between NYC housing activity and NYPD complaint patterns.
 
 ## Project Overview
-This project combines NYC housing sales and NYPD complaint data to uncover how market trends align with public safety patterns across boroughs. SQL was used for data cleaning and analysis and Tableau was used to build interactive visualizations and dashboards. The analysis highlights differences in pricing, sales activity, and complaint levels across NYC from 2016–2024.
+This project combines NYC housing sales and NYPD complaint data to uncover how market trends align with public safety patterns across boroughs. SQL was used for data cleaning and analysis, and Tableau was used to build interactive visualizations and dashboards. The analysis highlights differences in pricing, sales activity, and complaint levels across NYC from 2016–2024.
 
 ## Data Sources
 
@@ -14,7 +14,7 @@ This project combines NYC housing sales and NYPD complaint data to uncover how m
 
 ### NYPD Complaint Data Current (Year To Date)
 - Downloaded: Oct 22, 2025
-- Row count at downloaded: ~288k
+- Row count at download: ~288k
 - Current row count (as of Nov 25, 2025): ~439k
 - Source: [`NYPD Complaint Data`](https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243/about_data)
 
